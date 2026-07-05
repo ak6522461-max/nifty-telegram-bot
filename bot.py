@@ -1,8 +1,8 @@
 import requests
 import yfinance as yf
 
-BOT_TOKEN = "YOUR_BOT_TOKEN"
-CHAT_ID = "YOUR_CHAT_ID"
+BOT_TOKEN = "8635826832:AAG6UZ6nNq9unKmT-yf7J-lu2lHiWoI7PAE"
+CHAT_ID = "7282928970"
 
 symbol = "^NSEI"
 
