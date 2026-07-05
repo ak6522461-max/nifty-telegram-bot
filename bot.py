@@ -33,7 +33,6 @@ hist["EMA21"] = hist["Close"].ewm(span=21, adjust=False).mean()
 delta = hist["Close"].diff()
 gain = delta.where(delta > 0, 0)
 loss = -delta.where(delta < 0, 0)
-
 avg_gain = gain.rolling(14).mean()
 avg_loss = loss.rolling(14).mean()
 
