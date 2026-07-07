@@ -37,21 +37,28 @@ gain = delta.where(delta > 0, 0)
 loss = -delta.where(delta < 0, 0)
 avg_gain = gain.rolling(14).mean()
 avg_loss = loss.rolling(14).mean()
-
+# MACD
+hist["EMA12"] = hist["Close"].ewm(span=12, adjust=False).mean()
+hist["EMA26"] = hist["Close"].ewm(span=26, adjust=False).mean()
+hist["MACD"] = hist["EMA12"] - hist["EMA26"]
+hist["Signal_Line"] = hist["MACD"].ewm(span=9, adjust=False).mean()
 rs = avg_gain / avg_loss
+and price < vwap
 hist["RSI"] = 100 - (100 / (1 + rs))
 price = round(hist["Close"].iloc[-1], 2)
 ema9 = hist["EMA9"].iloc[-1]
 ema21 = hist["EMA21"].iloc[-1]
 rsi = hist["RSI"].iloc[-1]
 vwap = hist["VWAP"].iloc[-1]
-if ema9 > ema21 and rsi > 55 and price > vwap:
+macd = hist["MACD"].iloc[-1]
+signal_line = hist["Signal_Line"].iloc[-1]
+if ema9 > ema21 and rsi > 55 and macd > signal_line:
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
     target2 = round(price + 100, 2)
     stoploss = round(price - 50, 2)
 
-elif ema9 < ema21 and rsi < 45 and price < vwap:
+elif ema9 < ema21 and rsi < 45 and macd < signal_line:
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
     target2 = round(price - 100, 2)
