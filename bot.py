@@ -61,16 +61,30 @@ else:
     target2 = "-"
     stoploss = "-"
 
+message = strike = round(price / 50) * 50
+
+if signal == "🟢 BUY CE":
+    option = f"{strike} CE"
+elif signal == "🔴 BUY PE":
+    option = f"{strike} PE"
+else:
+    option = "-"
+
 message = f"""
 📊 NIFTY SIGNAL
 
-Price: {price}
+💰 Spot Price: {price:.2f}
 
-Signal: {signal}
+📢 Signal: {signal}
+
+🎯 Option: {option}
 
 🎯 Target 1: {target1}
 🎯 Target 2: {target2}
 🛑 Stop Loss: {stoploss}
+
+📈 RSI: {rsi:.2f}
+🕒 {datetime.now().strftime('%d-%m-%Y %I:%M %p')}
 """
 
 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
