@@ -24,7 +24,9 @@ if now.weekday() >= 5:
 if not ((now.hour > 9 or (now.hour == 9 and now.minute >= 15)) and
         (now.hour < 15 or (now.hour == 15 and now.minute <= 30))):
     print("Outside Market Hours")
-
+# VWAP
+hist["TP"] = (hist["High"] + hist["Low"] + hist["Close"]) / 3
+hist["VWAP"] = (hist["TP"] * hist["Volume"]).cumsum() / hist["Volume"].cumsum()
 # EMA
 hist["EMA9"] = hist["Close"].ewm(span=9, adjust=False).mean()
 hist["EMA21"] = hist["Close"].ewm(span=21, adjust=False).mean()
@@ -42,14 +44,14 @@ price = round(hist["Close"].iloc[-1], 2)
 ema9 = hist["EMA9"].iloc[-1]
 ema21 = hist["EMA21"].iloc[-1]
 rsi = hist["RSI"].iloc[-1]
-
-if ema9 > ema21 and rsi > 55:
+vwap = hist["VWAP"].iloc[-1]
+if ema9 > ema21 and rsi > 55 and price > vwap:
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
     target2 = round(price + 100, 2)
     stoploss = round(price - 50, 2)
 
-elif ema9 < ema21 and rsi < 45:
+elif ema9 < ema21 and rsi < 45 and price < vwap:
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
     target2 = round(price - 100, 2)
