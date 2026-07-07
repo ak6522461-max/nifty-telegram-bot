@@ -19,11 +19,11 @@ now = datetime.now()
 
 # Market Hours
 if now.weekday() >= 5:
-    exit()
+    print("Market Closed")
 
 if not ((now.hour > 9 or (now.hour == 9 and now.minute >= 15)) and
         (now.hour < 15 or (now.hour == 15 and now.minute <= 30))):
-    exit()
+    print("Outside Market Hours")
 
 # EMA
 hist["EMA9"] = hist["Close"].ewm(span=9, adjust=False).mean()
