@@ -52,17 +52,11 @@ rsi = hist["RSI"].iloc[-1]
 vwap = hist["VWAP"].iloc[-1]
 macd = hist["MACD"].iloc[-1]
 signal_line = hist["Signal_Line"].iloc[-1]
-if ema9 > ema21 and rsi > 55 and macd > signal_line:
+if ema9 > ema21 and rsi > 55 and price > vwap and macd > signal_line:
     signal = "🟢 BUY CE"
-    target1 = round(price + 50, 2)
-    target2 = round(price + 100, 2)
-    stoploss = round(price - 50, 2)
 
-elif ema9 < ema21 and rsi < 45 and macd < signal_line:
+elif ema9 < ema21 and rsi < 45 and price < vwap and macd < signal_line:
     signal = "🔴 BUY PE"
-    target1 = round(price - 50, 2)
-    target2 = round(price - 100, 2)
-    stoploss = round(price + 50, 2)
 
 else:
     signal = "⚪ NO TRADE"
