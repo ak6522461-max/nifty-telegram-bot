@@ -2,7 +2,7 @@ import requests
 import os
 import yfinance as yf
 from datetime import datetime
-
+LAST_SIGNAL_FILE = "last_signal.txt"
 # ==========================
 # TELEGRAM SETTINGS
 # ==========================
@@ -86,13 +86,25 @@ avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
 # ==========================
 # SIGNAL LOGIC
 # ==========================
-if ema9 > ema21 and rsi > 55 and price > vwap and macd > signal_line and volume > avg_volume:
+if (
+    ema9 > ema21
+    and rsi > 60
+    and price > vwap
+    and macd > signal_line
+    and volume > avg_volume * 1.2
+):
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
     target2 = round(price + 100, 2)
     stoploss = round(price - 50, 2)
 
-elif ema9 < ema21 and rsi < 45 and price < vwap and macd < signal_line and volume > avg_volume:
+elif (
+    ema9 < ema21
+    and rsi < 40
+    and price < vwap
+    and macd < signal_line
+    and volume > avg_volume * 1.2
+):
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
     target2 = round(price - 100, 2)
@@ -125,8 +137,9 @@ if signal == last_signal:
     print("Duplicate Signal - Not Sending")
     exit()
 
-with open(LAST_SIGNAL_FILE, "w") as f:
-    f.write(signal)
+if signal != "⚪ NO TRADE":
+    with open(LAST_SIGNAL_FILE, "w") as f:
+        f.write(signal)
 # ==========================
 # TELEGRAM MESSAGE
 # ==========================
