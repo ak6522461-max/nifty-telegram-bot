@@ -1,4 +1,5 @@
 import requests
+import os
 import yfinance as yf
 from datetime import datetime
 
@@ -7,7 +8,7 @@ from datetime import datetime
 # ==========================
 BOT_TOKEN = "8635826832:AAG6UZ6nNq9unKmT-yf7J-lu2lHiWoI7PAE"
 CHAT_ID = "7282928970"
-
+LAST_SIGNAL_FILE = "last_signal.txt"
 # ==========================
 # MARKET DATA
 # ==========================
@@ -114,7 +115,18 @@ elif signal == "🔴 BUY PE":
     option = f"{strike} PE"
 else:
     option = "-"
+last_signal = ""
 
+if os.path.exists(LAST_SIGNAL_FILE):
+    with open(LAST_SIGNAL_FILE, "r") as f:
+        last_signal = f.read().strip()
+
+if signal == last_signal:
+    print("Duplicate Signal - Not Sending")
+    exit()
+
+with open(LAST_SIGNAL_FILE, "w") as f:
+    f.write(signal)
 # ==========================
 # TELEGRAM MESSAGE
 # ==========================
