@@ -28,13 +28,6 @@ if now.weekday() >= 5:
     print("Market Closed")
     exit()
 
-if not (
-    (now.hour > 9 or (now.hour == 9 and now.minute >= 15))
-    and
-    (now.hour < 15 or (now.hour == 15 and now.minute <= 30))
-):
-    print("Outside Market Hours")
-    exit()
 
 # ==========================
 # VWAP
