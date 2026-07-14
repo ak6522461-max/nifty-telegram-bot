@@ -80,17 +80,18 @@ vwap = hist["VWAP"].iloc[-1]
 
 macd = hist["MACD"].iloc[-1]
 signal_line = hist["Signal_Line"].iloc[-1]
-
+volume = hist["Volume"].iloc[-1]
+avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
 # ==========================
 # SIGNAL LOGIC
 # ==========================
-if ema9 > ema21 and rsi > 55 and price > vwap and macd > signal_line:
+if ema9 > ema21 and rsi > 55 and price > vwap and macd > signal_line and volume > avg_volume:
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
     target2 = round(price + 100, 2)
     stoploss = round(price - 50, 2)
 
-elif ema9 < ema21 and rsi < 45 and price < vwap and macd < signal_line:
+elif ema9 < ema21 and rsi < 45 and price < vwap and macd < signal_line and volume > avg_volume:
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
     target2 = round(price - 100, 2)
@@ -133,6 +134,7 @@ message = f"""
 📈 EMA9 : {ema9:.2f}
 📉 EMA21: {ema21:.2f}
 📊 RSI  : {rsi:.2f}
+📊 Volume: {int(volume)}
 📍 VWAP : {vwap:.2f}
 📈 MACD : {macd:.2f}
 
