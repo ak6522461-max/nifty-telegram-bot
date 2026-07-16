@@ -210,7 +210,7 @@ message = f"""
 📊 Volume: {int(volume)}
 📍 VWAP : {vwap:.2f}
 📈 MACD : {macd:.2f}
-
+📈 ADX  : {adx:.2f}
 🕒 {datetime.now().strftime('%d-%m-%Y %I:%M %p')}
 """
 
