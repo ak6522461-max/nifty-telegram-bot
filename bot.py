@@ -83,6 +83,22 @@ macd = hist["MACD"].iloc[-1]
 signal_line = hist["Signal_Line"].iloc[-1]
 volume = hist["Volume"].iloc[-1]
 avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
+confidence = 50
+
+if ema9 > ema21:
+    confidence += 10
+
+if rsi > 60:
+    confidence += 10
+
+if price > vwap:
+    confidence += 10
+
+if macd > signal_line:
+    confidence += 10
+
+if volume > avg_volume * 1.2:
+    confidence += 10
 # ==========================
 # SIGNAL LOGIC
 # ==========================
@@ -140,6 +156,7 @@ if signal == last_signal:
 if signal != "⚪ NO TRADE":
     with open(LAST_SIGNAL_FILE, "w") as f:
         f.write(signal)
+        
 # ==========================
 # TELEGRAM MESSAGE
 # ==========================
@@ -149,7 +166,7 @@ message = f"""
 💰 Spot Price: {price:.2f}
 
 📢 Signal: {signal}
-
+🔥 Confidence: {confidence}%
 🎯 Option: {option}
 
 🎯 Target 1: {target1}
