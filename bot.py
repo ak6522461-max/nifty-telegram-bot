@@ -34,10 +34,14 @@ if now.weekday() >= 5:
 # VWAP
 # ==========================
 hist["TP"] = (hist["High"] + hist["Low"] + hist["Close"]) / 3
-hist["VWAP"] = (
-    (hist["TP"] * hist["Volume"]).cumsum()
-    / hist["Volume"].cumsum()
-)
+
+if hist["Volume"].sum() > 0:
+    hist["VWAP"] = (
+        (hist["TP"] * hist["Volume"]).cumsum()
+        / hist["Volume"].cumsum()
+    )
+else:
+    hist["VWAP"] = hist["Close"]
 
 # ==========================
 # EMA
@@ -107,7 +111,7 @@ if (
     and rsi > 60
     and price > vwap
     and macd > signal_line
-    and volume > avg_volume * 1.2
+    and price > vwap
 ):
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
