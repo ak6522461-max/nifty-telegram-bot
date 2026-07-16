@@ -112,7 +112,7 @@ signal_line = hist["Signal_Line"].iloc[-1]
 volume = hist["Volume"].iloc[-1]
 avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
 confidence = 50
-
+adx = hist["ADX"].iloc[-1]
 if ema9 > ema21:
     confidence += 10
 
@@ -130,12 +130,15 @@ if volume > avg_volume * 1.2:
 # ==========================
 # SIGNAL LOGIC
 # ==========================
+# ==========================
+# SIGNAL LOGIC
+# ==========================
 if (
     ema9 > ema21
     and rsi > 60
     and price > vwap
     and macd > signal_line
-    and hist["ADX"].iloc[-1] > 25
+    and adx > 25
 ):
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
@@ -147,7 +150,7 @@ elif (
     and rsi < 40
     and price < vwap
     and macd < signal_line
-    and hist["ADX"].iloc[-1] > 25
+    and adx > 25
 ):
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
