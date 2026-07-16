@@ -1,5 +1,6 @@
 import requests
 import os
+import pandas as pd
 import yfinance as yf
 from datetime import datetime
 LAST_SIGNAL_FILE = "last_signal.txt"
@@ -48,7 +49,30 @@ else:
 # ==========================
 hist["EMA9"] = hist["Close"].ewm(span=9, adjust=False).mean()
 hist["EMA21"] = hist["Close"].ewm(span=21, adjust=False).mean()
+# ==========================
+# ADX
+# ==========================
+plus_dm = hist["High"].diff()
+minus_dm = -hist["Low"].diff()
 
+plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0)
+minus_dm = minus_dm.where((minus_dm > plus_dm) & (minus_dm > 0), 0)
+
+tr = (
+    pd.concat([
+        hist["High"] - hist["Low"],
+        (hist["High"] - hist["Close"].shift()).abs(),
+        (hist["Low"] - hist["Close"].shift()).abs()
+    ], axis=1)
+).max(axis=1)
+
+atr = tr.rolling(14).mean()
+
+plus_di = 100 * (plus_dm.rolling(14).mean() / atr)
+minus_di = 100 * (minus_dm.rolling(14).mean() / atr)
+
+dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
+hist["ADX"] = dx.rolling(14).mean()
 # ==========================
 # RSI
 # ==========================
@@ -111,7 +135,7 @@ if (
     and rsi > 60
     and price > vwap
     and macd > signal_line
-    and price > vwap
+    and hist["ADX"].iloc[-1] > 25
 ):
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
@@ -123,7 +147,7 @@ elif (
     and rsi < 40
     and price < vwap
     and macd < signal_line
-    and volume > avg_volume * 1.2
+    and hist["ADX"].iloc[-1] > 25
 ):
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
