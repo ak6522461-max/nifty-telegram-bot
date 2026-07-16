@@ -138,7 +138,7 @@ if (
     and rsi > 60
     and price > vwap
     and macd > signal_line
-    and adx > 25
+    and adx > 20
 ):
     signal = "🟢 BUY CE"
     target1 = round(price + 50, 2)
@@ -150,7 +150,7 @@ elif (
     and rsi < 40
     and price < vwap
     and macd < signal_line
-    and adx > 25
+    and adx > 20
 ):
     signal = "🔴 BUY PE"
     target1 = round(price - 50, 2)
