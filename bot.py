@@ -158,9 +158,9 @@ if (
     and adx > 20
 ):
     signal = "🟢 BUY CE"
-    target1 = round(price + 50, 2)
-    target2 = round(price + 100, 2)
-    stoploss = round(price - 50, 2)
+    target1 = round(price + atr * 1.0, 2)
+target2 = round(price + atr * 2.0, 2)
+stoploss = round(price - atr * 1.0, 2)
 
 elif (
     ema9 < ema21
@@ -170,9 +170,9 @@ elif (
     and adx > 20
 ):
     signal = "🔴 BUY PE"
-    target1 = round(price - 50, 2)
-    target2 = round(price - 100, 2)
-    stoploss = round(price + 50, 2)
+    target1 = round(price - atr * 1.0, 2)
+target2 = round(price - atr * 2.0, 2)
+stoploss = round(price + atr * 1.0, 2)
 
 else:
     signal = "⚪ NO TRADE"
