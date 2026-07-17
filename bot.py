@@ -73,6 +73,21 @@ minus_di = 100 * (minus_dm.rolling(14).mean() / atr)
 
 dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
 hist["ADX"] = dx.rolling(14).mean()
+
+# ==========================
+# ATR
+# ==========================
+hist["TR"] = (
+    hist[["High", "Close"]].max(axis=1)
+    - hist[["Low", "Close"]].min(axis=1)
+)
+
+hist["ATR"] = hist["TR"].rolling(14).mean()
+
+# ==========================
+# RSI
+# ==========================
+delta = hist["Close"].diff()
 # ==========================
 # RSI
 # ==========================
@@ -109,6 +124,8 @@ vwap = hist["VWAP"].iloc[-1]
 
 macd = hist["MACD"].iloc[-1]
 signal_line = hist["Signal_Line"].iloc[-1]
+adx = hist["ADX"].iloc[-1]
+atr = hist["ATR"].iloc[-1]
 volume = hist["Volume"].iloc[-1]
 avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
 confidence = 50
