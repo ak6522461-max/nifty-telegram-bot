@@ -149,9 +149,11 @@ for i in range(1, len(hist)):
     elif hist["Close"].iloc[i] < hist["LowerBand"].iloc[i - 1]:
         supertrend.append(False)
     else:
-        supertrend.append(supertrend[-1])
+        hist["Supertrend"] = supertrend
 
-hist["Supertrend"] = supertrend
+supertrend = hist["Supertrend"].iloc[-1]
+
+
 
 # ==========================
 # CONFIDENCE SCORE
