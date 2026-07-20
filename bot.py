@@ -18,7 +18,15 @@ symbol = "^NSEI"
 
 data = yf.Ticker(symbol)
 hist = data.history(period="5d", interval="5m")
+# ==========================
+# 15 MINUTE DATA
+# ==========================
+hist15 = data.history(period="5d", interval="15m")
 
+hist15["EMA9"] = hist15["Close"].ewm(span=9, adjust=False).mean()
+hist15["EMA21"] = hist15["Close"].ewm(span=21, adjust=False).mean()
+
+trend15 = hist15["EMA9"].iloc[-1] > hist15["EMA21"].iloc[-1]
 if len(hist) < 30:
     print("Not enough data")
     exit()
@@ -122,7 +130,28 @@ atr = hist["ATR"].iloc[-1]
 # NIFTY Index में Volume अक्सर 0 होता है
 volume = None
 avg_volume = None
+supertrend = hist["Supertrend"].iloc[-1]
+# ==========================
+# SUPERTREND
+# ==========================
+multiplier = 3
 
+hl2 = (hist["High"] + hist["Low"]) / 2
+
+hist["UpperBand"] = hl2 + (multiplier * hist["ATR"])
+hist["LowerBand"] = hl2 - (multiplier * hist["ATR"])
+
+supertrend = [True]
+
+for i in range(1, len(hist)):
+    if hist["Close"].iloc[i] > hist["UpperBand"].iloc[i - 1]:
+        supertrend.append(True)
+    elif hist["Close"].iloc[i] < hist["LowerBand"].iloc[i - 1]:
+        supertrend.append(False)
+    else:
+        supertrend.append(supertrend[-1])
+
+hist["Supertrend"] = supertrend
 
 # ==========================
 # CONFIDENCE SCORE
@@ -145,32 +174,36 @@ if adx > 25:
     confidence += 10
 
 # ==========================
-# SIGNAL LOGIC
-# ==========================
+# SIGNAL 
 if (
     ema9 > ema21
     and rsi > 60
     and price > vwap
     and macd > signal_line
     and adx > 20
+    and supertrend
+    and trend15
 ):
     signal = "🟢 BUY CE"
     target1 = round(price + atr, 2)
     target2 = round(price + atr * 2, 2)
     stoploss = round(price - atr, 2)
 
-elif (
+
+    elif (
     ema9 < ema21
     and rsi < 40
     and price < vwap
     and macd < signal_line
     and adx > 20
+    and not supertrend
+    and not trend15
 ):
     signal = "🔴 BUY PE"
     target1 = round(price - atr, 2)
     target2 = round(price - atr * 2, 2)
     stoploss = round(price + atr, 2)
-
+and not supertrend
 else:
     signal = "⚪ NO TRADE"
     target1 = "-"
@@ -229,8 +262,9 @@ message = f"""
 📈 MACD : {macd:.2f}
 📈 ADX  : {adx:.2f}
 📊 ATR  : {atr:.2f}
+📊 15M Trend: {"Bullish 🟢" if trend15 else "Bearish 🔴"}
 💪 Trend Strength: {"Strong" if adx > 25 else "Weak"}
-
+📈 Supertrend: {"BUY" if supertrend else "SELL"}
 🕒 {datetime.now().strftime('%d-%m-%Y %I:%M %p')}
 """
 
