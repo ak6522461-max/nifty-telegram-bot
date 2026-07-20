@@ -130,7 +130,7 @@ atr = hist["ATR"].iloc[-1]
 # NIFTY Index में Volume अक्सर 0 होता है
 volume = None
 avg_volume = None
-supertrend = hist["Supertrend"].iloc[-1]
+
 # ==========================
 # SUPERTREND
 # ==========================
@@ -149,7 +149,9 @@ for i in range(1, len(hist)):
     elif hist["Close"].iloc[i] < hist["LowerBand"].iloc[i - 1]:
         supertrend.append(False)
     else:
-        hist["Supertrend"] = supertrend
+        supertrend.append(supertrend[-1])
+
+hist["Supertrend"] = supertrend
 
 supertrend = hist["Supertrend"].iloc[-1]
 
@@ -176,7 +178,8 @@ if adx > 25:
     confidence += 10
 
 # ==========================
-# SIGNAL 
+# SIGNAL
+# ==========================
 if (
     ema9 > ema21
     and rsi > 60
@@ -191,8 +194,7 @@ if (
     target2 = round(price + atr * 2, 2)
     stoploss = round(price - atr, 2)
 
-
-    elif (
+elif (
     ema9 < ema21
     and rsi < 40
     and price < vwap
@@ -205,7 +207,7 @@ if (
     target1 = round(price - atr, 2)
     target2 = round(price - atr * 2, 2)
     stoploss = round(price + atr, 2)
-and not supertrend
+
 else:
     signal = "⚪ NO TRADE"
     target1 = "-"
@@ -240,7 +242,8 @@ if signal == last_signal:
 if signal != "⚪ NO TRADE":
     with open(LAST_SIGNAL_FILE, "w") as f:
         f.write(signal)
-        # ==========================
+        
+# ==========================
 # TELEGRAM MESSAGE
 # ==========================
 message = f"""
