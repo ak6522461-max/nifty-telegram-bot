@@ -119,8 +119,10 @@ signal_line = hist["Signal_Line"].iloc[-1]
 adx = hist["ADX"].iloc[-1]
 atr = hist["ATR"].iloc[-1]
 
-volume = hist["Volume"].iloc[-1]
-avg_volume = hist["Volume"].rolling(20).mean().iloc[-1]
+# NIFTY Index में Volume अक्सर 0 होता है
+volume = None
+avg_volume = None
+
 
 # ==========================
 # CONFIDENCE SCORE
@@ -139,7 +141,7 @@ if price > vwap:
 if macd > signal_line:
     confidence += 10
 
-if adx > 20:
+if adx > 25:
     confidence += 10
 
 # ==========================
@@ -227,7 +229,7 @@ message = f"""
 📈 MACD : {macd:.2f}
 📈 ADX  : {adx:.2f}
 📊 ATR  : {atr:.2f}
-📊 Volume: {int(volume)}
+💪 Trend Strength: {"Strong" if adx > 25 else "Weak"}
 
 🕒 {datetime.now().strftime('%d-%m-%Y %I:%M %p')}
 """
