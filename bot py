@@ -201,3 +201,31 @@ else:
     target1 = "-"
     target2 = "-"
     stoploss = "-"
+# ==========================
+# OPTION STRIKE
+# ==========================
+strike = round(price / 50) * 50
+
+if signal == "🟢 BUY CE":
+    option = f"{strike} CE"
+elif signal == "🔴 BUY PE":
+    option = f"{strike} PE"
+else:
+    option = "-"
+
+# ==========================
+# DUPLICATE SIGNAL CHECK
+# ==========================
+last_signal = ""
+
+if os.path.exists(LAST_SIGNAL_FILE):
+    with open(LAST_SIGNAL_FILE, "r") as f:
+        last_signal = f.read().strip()
+
+if signal == last_signal:
+    print("Duplicate Signal - Not Sending")
+    exit()
+
+if signal != "⚪ NO TRADE":
+    with open(LAST_SIGNAL_FILE, "w") as f:
+        f.write(signal)
