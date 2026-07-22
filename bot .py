@@ -11,9 +11,9 @@ BOT_TOKEN = "8635826832:AAG6UZ6nNq9unKmT-yf7J-lu2lHiWoI7PAE"
 CHAT_ID = "7282928970"
 LAST_SIGNAL_FILE = "last_signal.txt"
 
-# =========================
+# ==========================
 # MARKET DATA
-# =========================
+# ==========================
 symbol = "^NSEI"
 
 data = yf.Ticker(symbol)
