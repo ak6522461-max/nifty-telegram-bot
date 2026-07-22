@@ -56,3 +56,25 @@ hist15["EMA9"] = hist15["Close"].ewm(span=9, adjust=False).mean()
 hist15["EMA21"] = hist15["Close"].ewm(span=21, adjust=False).mean()
 
 trend15 = hist15["EMA9"].iloc[-1] > hist15["EMA21"].iloc[-1]
+# ==========================
+# RSI
+# ==========================
+delta = hist["Close"].diff()
+
+gain = delta.where(delta > 0, 0)
+loss = -delta.where(delta < 0, 0)
+
+avg_gain = gain.rolling(14).mean()
+avg_loss = loss.rolling(14).mean()
+
+rs = avg_gain / avg_loss
+hist["RSI"] = 100 - (100 / (1 + rs))
+
+# ==========================
+# MACD
+# ==========================
+hist["EMA12"] = hist["Close"].ewm(span=12, adjust=False).mean()
+hist["EMA26"] = hist["Close"].ewm(span=26, adjust=False).mean()
+
+hist["MACD"] = hist["EMA12"] - hist["EMA26"]
+hist["Signal_Line"] = hist["MACD"].ewm(span=9, adjust=False).mean()
