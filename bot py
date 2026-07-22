@@ -106,3 +106,42 @@ hist["ADX"] = dx.rolling(14).mean()
 # ==========================
 hist["TR"] = tr
 hist["ATR"] = atr
+# ==========================
+# LATEST VALUES
+# ==========================
+price = round(hist["Close"].iloc[-1], 2)
+
+ema9 = hist["EMA9"].iloc[-1]
+ema21 = hist["EMA21"].iloc[-1]
+
+rsi = hist["RSI"].iloc[-1]
+vwap = hist["VWAP"].iloc[-1]
+
+macd = hist["MACD"].iloc[-1]
+signal_line = hist["Signal_Line"].iloc[-1]
+
+adx = hist["ADX"].iloc[-1]
+atr = hist["ATR"].iloc[-1]
+
+# ==========================
+# SUPERTREND
+# ==========================
+multiplier = 3
+
+hl2 = (hist["High"] + hist["Low"]) / 2
+
+hist["UpperBand"] = hl2 + (multiplier * hist["ATR"])
+hist["LowerBand"] = hl2 - (multiplier * hist["ATR"])
+
+supertrend = [True]
+
+for i in range(1, len(hist)):
+    if hist["Close"].iloc[i] > hist["UpperBand"].iloc[i - 1]:
+        supertrend.append(True)
+    elif hist["Close"].iloc[i] < hist["LowerBand"].iloc[i - 1]:
+        supertrend.append(False)
+    else:
+        supertrend.append(supertrend[-1])
+
+hist["Supertrend"] = supertrend
+supertrend = hist["Supertrend"].iloc[-1]
