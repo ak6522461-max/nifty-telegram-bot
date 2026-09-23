@@ -1,1 +1,1 @@
-# nifty-telegram-bot
+# aarif-ai-nifty-bot
